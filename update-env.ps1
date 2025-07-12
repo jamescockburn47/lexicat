@@ -29,5 +29,5 @@ Write-Host "📝 Next steps:" -ForegroundColor Yellow
 Write-Host "1. Go to Google Cloud Console > APIs & Services > Credentials" -ForegroundColor White
 Write-Host "2. Find your OAuth2 client and copy the Client Secret" -ForegroundColor White
 Write-Host "3. Replace 'YOUR_CLIENT_SECRET_HERE' in the .env file" -ForegroundColor White
-Write-Host "4. Make sure the redirect URI is set to: http://localhost:3001/auth/google/callback" -ForegroundColor White
+Write-Host "4. Make sure the redirect URI is set to: http://<YOUR_BACKEND_URL>:3001/auth/google/callback" -ForegroundColor White
 Write-Host "5. Restart the backend server: npm run server" -ForegroundColor White 

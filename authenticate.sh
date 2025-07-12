@@ -4,7 +4,8 @@ echo "🔐 Starting Google OAuth2 Authentication..."
 echo ""
 
 # Get the auth URL
-AUTH_RESPONSE=$(curl -s http://localhost:3001/auth/google)
+BACKEND_URL="${VITE_BACKEND_URL:-http://localhost:3001}"
+AUTH_RESPONSE=$(curl -s "$BACKEND_URL/auth/google")
 AUTH_URL=$(echo $AUTH_RESPONSE | grep -o '"authUrl":"[^"]*"' | cut -d'"' -f4)
 
 if [ -z "$AUTH_URL" ]; then
@@ -30,7 +31,7 @@ if [ -z "$AUTH_CODE" ]; then
 fi
 
 echo "🔄 Exchanging code for tokens..."
-TOKEN_RESPONSE=$(curl -s "http://localhost:3001/auth/google/callback?code=$AUTH_CODE")
+TOKEN_RESPONSE=$(curl -s "$BACKEND_URL/auth/google/callback?code=$AUTH_CODE")
 
 if echo "$TOKEN_RESPONSE" | grep -q '"success":true'; then
     echo "✅ Authentication successful!"

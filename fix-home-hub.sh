@@ -27,8 +27,9 @@ echo "4. Waiting for backend to start..."
 sleep 5
 
 # Check if backend is running
-if curl -s http://localhost:3001/api/health > /dev/null; then
-    echo "✅ Backend is running on http://localhost:3001"
+BACKEND_URL="${VITE_BACKEND_URL:-http://localhost:3001}"
+if curl -s "$BACKEND_URL/api/health" > /dev/null; then
+    echo "✅ Backend is running on $BACKEND_URL"
 else
     echo "❌ Backend failed to start"
     exit 1
@@ -48,8 +49,8 @@ echo "================================"
 echo "🎉 Home Hub is now running!"
 echo ""
 echo "📱 Frontend: http://$IP_ADDRESS:5173/"
-echo "🔧 Backend:  http://localhost:3001/api/health"
-echo "🔐 OAuth:    http://localhost:3001/auth/google"
+echo "🔧 Backend:  $BACKEND_URL/api/health"
+echo "🔐 OAuth:    $BACKEND_URL/auth/google"
 echo ""
 echo "💡 To access from Windows, use: http://$IP_ADDRESS:5173/"
 echo "💡 To stop servers: pkill -f 'node.*server' && pkill -f 'vite'"

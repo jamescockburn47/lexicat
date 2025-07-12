@@ -30,7 +30,7 @@ VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here
    - Go to "APIs & Services" > "Credentials"
    - Click "Create Credentials" > "OAuth 2.0 Client IDs"
    - Choose "Web application"
-   - Add authorized redirect URI: `http://localhost:3001/auth/google/callback`
+   - Add authorized redirect URI: `http://<YOUR_BACKEND_URL>:3001/auth/google/callback`
    - Copy the Client ID and Client Secret to your `.env` file
 
 ### 3. Running the Application

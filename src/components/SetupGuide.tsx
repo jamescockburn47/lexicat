@@ -29,7 +29,10 @@ const SetupGuide: React.FC = () => {
               <li>Create a new project or select an existing one</li>
               <li>Enable the Google Calendar API</li>
               <li>Create OAuth2 credentials (not API key)</li>
-              <li>Add redirect URI: <code className="bg-dark-700 px-2 py-1 rounded">http://localhost:3001/auth/google/callback</code></li>
+              <li>
+                Add redirect URI:
+                <code className="bg-dark-700 px-2 py-1 rounded">http://&lt;YOUR_BACKEND_URL&gt;:3001/auth/google/callback</code>
+              </li>
             </ol>
           </div>
 
@@ -46,10 +49,13 @@ const SetupGuide: React.FC = () => {
             <div className="bg-dark-700 rounded-lg p-4 mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-400">Environment Variables</span>
-                <button 
-                  onClick={() => copyToClipboard(`VITE_GOOGLE_CLIENT_ID=your_oauth2_client_id_here
+                <button
+                  onClick={() =>
+                    copyToClipboard(`VITE_GOOGLE_CLIENT_ID=your_oauth2_client_id_here
 VITE_GOOGLE_CLIENT_SECRET=your_oauth2_client_secret_here
-VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here`)}
+VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here
+VITE_BACKEND_URL=http://<YOUR_BACKEND_URL>:3001`)
+                  }
                   className="text-primary-400 hover:text-primary-300 text-sm flex items-center"
                 >
                   <Copy className="w-4 h-4 mr-1" />
@@ -59,7 +65,8 @@ VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here`)}
               <pre className="text-sm text-green-400 overflow-x-auto">
 {`VITE_GOOGLE_CLIENT_ID=your_oauth2_client_id_here
 VITE_GOOGLE_CLIENT_SECRET=your_oauth2_client_secret_here
-VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here`}
+VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here
+VITE_BACKEND_URL=http://<YOUR_BACKEND_URL>:3001`}
               </pre>
             </div>
           </div>
@@ -121,7 +128,7 @@ VITE_GOOGLE_CALENDAR_ID=your_calendar_id_here`}
               <li>• Make sure both frontend and backend servers are running</li>
               <li>• Verify OAuth2 credentials are correct in .env file</li>
               <li>• Check that you're added as a test user in OAuth consent screen</li>
-              <li>• Ensure redirect URI matches exactly: http://localhost:3001/auth/google/callback</li>
+              <li>• Ensure redirect URI matches exactly: http://&lt;YOUR_BACKEND_URL&gt;:3001/auth/google/callback</li>
               <li>• Try the authentication test at /auth route first</li>
             </ul>
           </div>
