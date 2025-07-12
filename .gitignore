@@ -16,6 +16,7 @@ yarn-error.log*
 # Environment variables
 .env
 .env.*
+tokens.json
 
 # OS files
 .DS_Store
@@ -30,6 +31,7 @@ coverage/
 .cache/
 .parcel-cache/
 .next/
+uploads/
 
 # VSCode
 .vscode/ 

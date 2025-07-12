@@ -296,10 +296,14 @@ app.post('/api/whisper', upload.single('audio'), async (req, res) => {
     }
 
     const audioFilePath = req.file.path
-    const whisperPath = process.env.WHISPER_CPP_PATH || './whisper.cpp/main'
-    const modelPath = process.env.WHISPER_MODEL_PATH || './whisper.cpp/models/ggml-base.en.bin'
+    const whisperPath = process.env.WHISPER_CPP_PATH || path.join(__dirname, '../whisper.cpp/build/bin/whisper-cli')
+    const modelPath = process.env.WHISPER_MODEL_PATH || path.join(__dirname, '../whisper.cpp/models/ggml-base.en.bin')
 
     // Check if whisper.cpp executable exists
+    console.log('🔍 Checking whisper.cpp path:', whisperPath)
+    console.log('🔍 Current working directory:', process.cwd())
+    console.log('🔍 __dirname:', __dirname)
+    
     if (!fs.existsSync(whisperPath)) {
       console.error('Whisper.cpp not found at:', whisperPath)
       return res.status(500).json({ 
@@ -375,5 +379,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Backend proxy server running on http://localhost:${PORT}`)
   console.log(`🔧 OAuth2 configured: ${!!(CLIENT_ID && CLIENT_SECRET)}`)
   console.log(`📅 Calendar ID: ${CALENDAR_ID}`)
-  console.log(`🎤 Whisper.cpp path: ${process.env.WHISPER_CPP_PATH || './whisper.cpp/main'}`)
+  console.log(`🎤 Whisper.cpp path: ${process.env.WHISPER_CPP_PATH || path.join(__dirname, '../whisper.cpp/build/bin/whisper-cli')}`)
 }) 
