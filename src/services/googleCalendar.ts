@@ -1,6 +1,7 @@
 import { CalendarEvent, CalendarApiResponse } from '../types/calendar'
+import { backendUrl } from '../utils/backend'
 
-const BACKEND_API_BASE = 'http://localhost:3001/api'
+const BACKEND_API_BASE = backendUrl('/api')
 
 interface GoogleCalendarConfig {
   apiKey: string

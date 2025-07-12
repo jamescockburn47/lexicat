@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Zap, CheckCircle, XCircle, Loader, AlertTriangle, Shield, ExternalLink } from 'lucide-react'
+import { backendUrl } from '../utils/backend'
 
 const DirectTest: React.FC = () => {
   const [testResult, setTestResult] = useState<string | null>(null)
@@ -67,7 +68,7 @@ const DirectTest: React.FC = () => {
       addDiagnostic('Testing with backend proxy approach...')
       
       // Test 1: Check backend health
-      const healthResponse = await fetch('http://localhost:3001/api/health')
+      const healthResponse = await fetch(backendUrl('/api/health'))
       const healthData = await healthResponse.json()
       addDiagnostic(`Backend health: ${healthData.status}`)
       addDiagnostic(`OAuth2 configured: ${healthData.oauthConfigured}`)
@@ -78,7 +79,7 @@ const DirectTest: React.FC = () => {
       }
 
       // Test 2: Try to test calendar API
-      const testResponse = await fetch('http://localhost:3001/api/calendar/test')
+      const testResponse = await fetch(backendUrl('/api/calendar/test'))
       addDiagnostic(`Calendar test response: ${testResponse.status}`)
 
       if (testResponse.status === 401) {
@@ -116,7 +117,7 @@ const DirectTest: React.FC = () => {
       addDiagnostic('Testing OAuth2 authentication flow...')
       
       // Get auth URL from backend
-      const authResponse = await fetch('http://localhost:3001/auth/google')
+      const authResponse = await fetch(backendUrl('/auth/google'))
       const authData = await authResponse.json()
       
       if (authData.authUrl) {
@@ -143,7 +144,7 @@ const DirectTest: React.FC = () => {
     try {
       addDiagnostic('Starting OAuth2 authentication...')
       
-      const authResponse = await fetch('http://localhost:3001/auth/google')
+      const authResponse = await fetch(backendUrl('/auth/google'))
       const authData = await authResponse.json()
       
       if (authData.authUrl) {
@@ -170,7 +171,7 @@ const DirectTest: React.FC = () => {
     try {
       addDiagnostic('Checking authentication status...')
       
-      const testResponse = await fetch('http://localhost:3001/api/calendar/test')
+      const testResponse = await fetch(backendUrl('/api/calendar/test'))
       addDiagnostic(`Status check response: ${testResponse.status}`)
 
       if (testResponse.ok) {

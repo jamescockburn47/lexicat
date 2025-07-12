@@ -31,7 +31,8 @@ app.use(express.json())
 // Google OAuth2 configuration
 const CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID
 const CLIENT_SECRET = process.env.VITE_GOOGLE_CLIENT_SECRET
-const REDIRECT_URI = 'http://localhost:3001/auth/google/callback'
+const BACKEND_URL = process.env.VITE_BACKEND_URL || 'http://localhost:3001'
+const REDIRECT_URI = `${BACKEND_URL}/auth/google/callback`
 const CALENDAR_ID = process.env.VITE_GOOGLE_CALENDAR_ID || 'primary'
 
 // Create OAuth2 client

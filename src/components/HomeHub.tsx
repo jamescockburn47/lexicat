@@ -4,6 +4,7 @@ import { CalendarEvent } from '../types/calendar'
 import { useCalendar } from '../hooks/useCalendar'
 import { Clock, MapPin, Users, Mic, MicOff, Volume2, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import CalendarDisplay from './CalendarDisplay'
+import { backendUrl } from '../utils/backend'
 
 const HomeHub: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -153,7 +154,7 @@ const HomeHub: React.FC = () => {
       const formData = new FormData()
       formData.append('audio', audioBlob, 'recording.wav')
 
-      const response = await fetch('http://localhost:3001/api/whisper', {
+      const response = await fetch(backendUrl('/api/whisper'), {
         method: 'POST',
         body: formData
       })

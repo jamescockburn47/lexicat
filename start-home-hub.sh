@@ -101,8 +101,9 @@ BACKEND_PID=$!
 sleep 5
 
 # Check if backend is running
-if curl -s http://localhost:3001/api/health > /dev/null 2>&1; then
-    print_success "Backend server is running on http://localhost:3001"
+BACKEND_URL="${VITE_BACKEND_URL:-http://localhost:3001}"
+if curl -s "$BACKEND_URL/api/health" > /dev/null 2>&1; then
+    print_success "Backend server is running on $BACKEND_URL"
 else
     print_error "Backend server failed to start"
     print_status "Checking backend logs..."
@@ -140,9 +141,9 @@ echo "   Local:  http://localhost:5173/"
 echo "   Network: http://$IP_ADDRESS:5173/"
 echo ""
 echo "🔧 Backend URLs:"
-echo "   Health: http://localhost:3001/api/health"
-echo "   OAuth:  http://localhost:3001/auth/google"
-echo "   Calendar: http://localhost:3001/api/calendar/list"
+echo "   Health: $BACKEND_URL/api/health"
+echo "   OAuth:  $BACKEND_URL/auth/google"
+echo "   Calendar: $BACKEND_URL/api/calendar/list"
 echo ""
 echo "💡 To access from Windows browser:"
 echo "   http://$IP_ADDRESS:5173/"

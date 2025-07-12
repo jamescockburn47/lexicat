@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Bug, RefreshCw, CheckCircle, XCircle, Shield } from 'lucide-react'
+import { backendUrl } from '../utils/backend'
 
 const DebugPanel: React.FC = () => {
   const [testResult, setTestResult] = useState<string | null>(null)
@@ -13,7 +14,7 @@ const DebugPanel: React.FC = () => {
       console.log('🧪 Starting debug test...')
       
       // Test 1: Check backend health
-      const healthResponse = await fetch('http://localhost:3001/api/health')
+      const healthResponse = await fetch(backendUrl('/api/health'))
       const healthData = await healthResponse.json()
       console.log('Test 1 - Backend health:', healthData.status)
       
@@ -23,7 +24,7 @@ const DebugPanel: React.FC = () => {
       }
       
       // Test 2: Test calendar connection
-      const testResponse = await fetch('http://localhost:3001/api/calendar/test')
+      const testResponse = await fetch(backendUrl('/api/calendar/test'))
       console.log('Test 2 - Calendar test:', testResponse.status)
       
       if (testResponse.status === 401) {

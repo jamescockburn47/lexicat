@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Shield, CheckCircle, XCircle, Loader, ExternalLink } from 'lucide-react'
+import { backendUrl } from '../utils/backend'
 
 const AuthTest: React.FC = () => {
   const [authStatus, setAuthStatus] = useState<string | null>(null)
@@ -15,7 +16,7 @@ const AuthTest: React.FC = () => {
       console.log('🔐 Testing OAuth2 authentication...')
       
       // Test 1: Check if backend is configured
-      const healthResponse = await fetch('http://localhost:3001/api/health')
+      const healthResponse = await fetch(backendUrl('/api/health'))
       const healthData = await healthResponse.json()
       
       if (!healthData.oauthConfigured) {
@@ -26,7 +27,7 @@ const AuthTest: React.FC = () => {
       console.log('✅ Backend is configured')
 
       // Test 2: Try to test calendar API (will fail if not authenticated)
-      const testResponse = await fetch('http://localhost:3001/api/calendar/test')
+      const testResponse = await fetch(backendUrl('/api/calendar/test'))
       const testData = await testResponse.json()
 
       if (testResponse.status === 401) {
@@ -59,7 +60,7 @@ const AuthTest: React.FC = () => {
     try {
       console.log('🔐 Starting OAuth2 flow...')
       
-      const authResponse = await fetch('http://localhost:3001/auth/google')
+      const authResponse = await fetch(backendUrl('/auth/google'))
       const authData = await authResponse.json()
       
       if (authData.authUrl) {
@@ -85,7 +86,7 @@ const AuthTest: React.FC = () => {
     try {
       console.log('🔍 Checking authentication status...')
       
-      const testResponse = await fetch('http://localhost:3001/api/calendar/test')
+      const testResponse = await fetch(backendUrl('/api/calendar/test'))
       const testData = await testResponse.json()
 
       if (testResponse.ok) {
