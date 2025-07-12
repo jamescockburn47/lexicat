@@ -62,26 +62,28 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
   }
 
   const processAudioWithWhisper = async (audioBlob: Blob) => {
-    // Simulate Whisper API call
-    // In a real implementation, you would send the audio to Whisper API
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Mock transcription result - updated for Pi 5 use case
-    const mockCommands = [
-      'tomorrow',
-      'yesterday',
-      'today',
-      'next week',
-      'previous week',
-      'refresh',
-      'help'
-    ]
-    
-    const randomCommand = mockCommands[Math.floor(Math.random() * mockCommands.length)]
-    
-    // Process the command
-    onCommand(randomCommand)
-    toast.success(`Command: ${randomCommand}`)
+    // Send audio to backend Whisper endpoint
+    try {
+      const formData = new FormData()
+      formData.append('audio', audioBlob, 'recording.webm')
+
+      const response = await fetch('/api/whisper', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      const result = await response.json()
+      const transcription = result.text.trim().toLowerCase()
+
+      onCommand(transcription)
+      toast.success(`Command: ${transcription}`)
+    } catch (error) {
+      console.error('Whisper API error:', error)
+      toast.error('Failed to process voice command')
+    }
   }
 
   const toggleListening = () => {

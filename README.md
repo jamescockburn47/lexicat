@@ -22,6 +22,10 @@ The app uses a wake word system optimized for Pi 5 display:
 - **Commands**: "Lexicat previous week" - Navigate to previous week
 - **Commands**: "Lexicat refresh" - Update calendar data
 - **Commands**: "Lexicat help" - Show available commands
+- **Commands**: "Lexicat switch to calendar" - Display calendar view
+- **Commands**: "Lexicat switch to weather" - Display weather view
+- **Commands**: "Lexicat switch to news" - Display news view
+- **Commands**: "Lexicat switch to tasks" - Display tasks view
 
 ## Tech Stack
 
@@ -239,6 +243,28 @@ sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
 @xset s off
 @xset -dpms
 @xset s noblank
+```
+
+## End-to-End Whisper.cpp Setup
+
+Follow these commands verbatim to build whisper.cpp, download a model, configure .env, and launch the backend + frontend:
+
+```bash
+cd ~/Home\ Hub
+sudo apt update
+sudo apt install -y build-essential cmake git ffmpeg
+git clone https://github.com/ggerganov/whisper.cpp.git
+cd whisper.cpp
+make
+bash models/download-ggml-model.sh base.en
+cd ..
+cat > .env << 'EOF'
+WHISPER_CPP_PATH=./whisper.cpp/main
+WHISPER_MODEL_PATH=./whisper.cpp/models/ggml-base.en.bin
+EOF
+npm install
+npm run server
+npm run dev
 ```
 
 ## Deployment

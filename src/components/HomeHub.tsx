@@ -13,6 +13,8 @@ const HomeHub: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [wakeWordDetected, setWakeWordDetected] = useState(false)
   const [isAwake, setIsAwake] = useState(false)
+  // current active view: 'calendar', 'weather', 'news', 'tasks'
+  const [activeFunction, setActiveFunction] = useState<'calendar' | 'weather' | 'news' | 'tasks'>('calendar')
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
 
@@ -158,28 +160,17 @@ const HomeHub: React.FC = () => {
 
       if (response.ok) {
         const result = await response.json()
-        const transcription = result.text.toLowerCase()
-        
+        const transcription = result.text.trim().toLowerCase()
+
         console.log('🎤 Whisper result:', transcription)
-        
-        if (transcription && transcription.length > 0) {
+        if (transcription) {
           handleVoiceCommand(transcription)
         }
       } else {
         console.error('Whisper API error:', response.statusText)
-        // Fallback to mock commands for testing
-        const mockCommands = ['lexicat tomorrow', 'lexicat yesterday', 'lexicat today', 'lexicat next week', 'lexicat previous week', 'lexicat refresh', 'lexicat help']
-        const randomCommand = mockCommands[Math.floor(Math.random() * mockCommands.length)]
-        console.log('🎤 Using mock command:', randomCommand)
-        handleVoiceCommand(randomCommand)
       }
     } catch (error) {
       console.error('Error calling whisper API:', error)
-      // Fallback to mock commands for testing
-      const mockCommands = ['lexicat tomorrow', 'lexicat yesterday', 'lexicat today', 'lexicat next week', 'lexicat previous week', 'lexicat refresh', 'lexicat help']
-      const randomCommand = mockCommands[Math.floor(Math.random() * mockCommands.length)]
-      console.log('🎤 Using mock command due to error:', randomCommand)
-      handleVoiceCommand(randomCommand)
     }
   }
 
@@ -225,8 +216,19 @@ const HomeHub: React.FC = () => {
       
       // Handle help commands
       if (cleanCommand.includes('help') || cleanCommand.includes('commands')) {
-        // Could show a help overlay
-        console.log('Available commands: lexicat tomorrow, lexicat yesterday, lexicat today, lexicat next week, lexicat previous week, lexicat refresh')
+        // Could show a help overlay or list available voice commands
+        console.log('Available commands: lexicat [today|tomorrow|yesterday|next week|previous week|refresh], lexicat switch to [calendar|weather|news|tasks], lexicat help')
+      }
+
+      // Handle switch to other functions
+      if (cleanCommand.includes('switch to weather') || cleanCommand.includes('weather')) {
+        setActiveFunction('weather')
+      } else if (cleanCommand.includes('switch to news') || cleanCommand.includes('news')) {
+        setActiveFunction('news')
+      } else if (cleanCommand.includes('switch to tasks') || cleanCommand.includes('tasks') || cleanCommand.includes('todo')) {
+        setActiveFunction('tasks')
+      } else if (cleanCommand.includes('switch to calendar') || cleanCommand.includes('calendar')) {
+        setActiveFunction('calendar')
       }
       
       // Reset wake word detection after 3 seconds
@@ -310,97 +312,122 @@ const HomeHub: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex">
-        {/* Events Panel - Left Side - Single Line Format */}
-        <div className="w-1/3 p-4 border-r border-white/10">
-          <div className="mb-4">
+        {activeFunction === 'calendar' && (
+          <>
+            {/* Events Panel - Left Side */}
+            <div className="w-1/3 p-4 border-r border-white/10">
+              <div className="mb-4">
             <h2 className="text-lg font-semibold text-white mb-1">
-              Today's Events
+              {getDateLabel(currentDate)} Events
             </h2>
-            <p className="text-sm text-gray-400">
-              {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''} scheduled
-            </p>
-          </div>
+                <p className="text-sm text-gray-400">
+                  {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''} scheduled
+                </p>
+              </div>
 
-          <div className="space-y-1">
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
-                <span className="ml-2 text-sm text-gray-400">Loading events...</span>
-              </div>
-            ) : sortedEvents.length === 0 ? (
-              <div className="text-center py-8">
-                <div className="text-gray-400 text-sm mb-1">No events scheduled</div>
-                <div className="text-xs text-gray-500">
-                  Enjoy your free time!
-                </div>
-              </div>
-            ) : (
-              sortedEvents.map((event, index) => (
-                <div
-                  key={event.id}
-                  className="event-line"
-                >
-                  {/* Single Line Event Display */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center flex-1 min-w-0">
-                      <div className="flex items-center text-xs text-primary-400 mr-3 flex-shrink-0">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {event.start.dateTime ? (
-                          formatTime(event.start.dateTime)
-                        ) : (
-                          'All day'
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-white font-medium truncate">
-                          {event.summary}
+              <div className="space-y-1">
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="ml-2 text-sm text-gray-400">Loading events...</span>
+                  </div>
+                ) : sortedEvents.length === 0 ? (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 text-sm mb-1">No events scheduled</div>
+                    <div className="text-xs text-gray-500">Enjoy your free time!</div>
+                  </div>
+                ) : (
+                  sortedEvents.map((event) => (
+                    <div key={event.id} className="event-line">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center flex-1 min-w-0">
+                          <div className="flex items-center text-xs text-primary-400 mr-3 flex-shrink-0">
+                            <Clock className="w-3 h-3 mr-1" />
+                            {event.start.dateTime
+                              ? formatTime(event.start.dateTime)
+                              : 'All day'}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm text-white font-medium truncate">
+                              {event.summary}
+                            </div>
+                            {event.location && (
+                              <div className="text-xs text-gray-400 truncate">
+                                📍 {event.location}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        {event.location && (
-                          <div className="text-xs text-gray-400 truncate">
-                            📍 {event.location}
+                        {event.attendees && event.attendees.length > 0 && (
+                          <div className="flex items-center text-xs text-gray-400 ml-2 flex-shrink-0">
+                            <Users className="w-3 h-3 mr-1" />
+                            <span>{event.attendees.length}</span>
                           </div>
                         )}
                       </div>
                     </div>
-                    {event.attendees && event.attendees.length > 0 && (
-                      <div className="flex items-center text-xs text-gray-400 ml-2 flex-shrink-0">
-                        <Users className="w-3 h-3 mr-1" />
-                        <span>{event.attendees.length}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+                  ))
+                )}
+              </div>
+            </div>
 
-        {/* Monthly Calendar - Right Side */}
-        <div className="w-2/3">
-          <CalendarDisplay 
-            events={events}
-            currentDate={currentDate}
-            onDateChange={setCurrentDate}
-          />
-        </div>
+            {/* Monthly Calendar - Right Side */}
+            <div className="w-2/3">
+              <CalendarDisplay
+                events={events}
+                currentDate={currentDate}
+                onDateChange={setCurrentDate}
+              />
+            </div>
+          </>
+        )}
+        {activeFunction === 'weather' && (
+          <div className="flex-1 p-8 text-center text-white">
+            <h2 className="text-2xl font-semibold mb-4">Weather View</h2>
+            <p>Weather information will appear here.</p>
+          </div>
+        )}
+        {activeFunction === 'news' && (
+          <div className="flex-1 p-8 text-center text-white">
+            <h2 className="text-2xl font-semibold mb-4">News View</h2>
+            <p>Latest news headlines will appear here.</p>
+          </div>
+        )}
+        {activeFunction === 'tasks' && (
+          <div className="flex-1 p-8 text-center text-white">
+            <h2 className="text-2xl font-semibold mb-4">Tasks View</h2>
+            <p>Your tasks and to-dos will appear here.</p>
+          </div>
+        )}
       </div>
 
       {/* Voice Commands Help - Fixed at bottom */}
       <div className="p-3 border-t border-white/10 bg-dark-800/50">
         <div className="text-center text-xs text-gray-400 mb-2">
-          <span className="font-medium">Wake Word:</span> "Lexicat" + "tomorrow", "yesterday", "today", "next week", "previous week", "refresh"
+          <span className="font-medium">Wake Word:</span> "Lexicat" + navigation commands ("today", "tomorrow", "yesterday", "next week", "previous week", "refresh"), or switch commands ("switch to calendar", "switch to weather", "switch to news", "switch to tasks")
         </div>
         <div className="text-center">
-          <button 
-            onClick={() => {
-              const testCommands = ['lexicat tomorrow', 'lexicat yesterday', 'lexicat today', 'lexicat next week', 'lexicat previous week', 'lexicat refresh']
-              const randomCommand = testCommands[Math.floor(Math.random() * testCommands.length)]
-              handleVoiceCommand(randomCommand)
-            }}
-            className="px-3 py-1 text-xs bg-primary-600 hover:bg-primary-700 rounded transition-colors"
-          >
-            Test Voice Command
-          </button>
+            <button
+              onClick={() => {
+                const testCommands = [
+                  'lexicat tomorrow',
+                  'lexicat yesterday',
+                  'lexicat today',
+                  'lexicat next week',
+                  'lexicat previous week',
+                  'lexicat refresh',
+                  'lexicat switch to weather',
+                  'lexicat switch to news',
+                  'lexicat switch to tasks',
+                  'lexicat switch to calendar',
+                ]
+                const randomCommand = testCommands[Math.floor(Math.random() * testCommands.length)]
+                handleVoiceCommand(randomCommand)
+              }}
+              className="px-3 py-1 text-xs bg-primary-600 hover:bg-primary-700 rounded transition-colors"
+            >
+              Test Voice Command
+            </button>
         </div>
       </div>
     </div>
