@@ -70,6 +70,27 @@ npm run dev
 ```
 4. Open your browser and navigate to `http://localhost:5173`
 
+### Running via Script
+
+We've provided a launcher script to simplify starting both backend and frontend. Make sure it's executable:
+
+```bash
+chmod +x start-home-hub.sh
+```
+
+Then run:
+
+```bash
+./start-home-hub.sh
+```
+
+#### Running on Windows via WSL
+
+If you're on Windows with WSL installed, you can launch Home Hub directly from Windows:
+
+- Double-click `run-home-hub.bat`
+- Or in PowerShell, run `.\run-home-hub.ps1`
+
 ### Environment Variables
 
 Create a `.env` file in the root directory:
@@ -130,7 +151,16 @@ src/
 
 ### Raspberry Pi 5 Display Setup
 
-This application is optimized for running on a Raspberry Pi 5 with a display. The interface is designed for voice-controlled navigation using the wake word "Lexicat" without keyboard/mouse input.
+This application is optimized for running on a Raspberry Pi 5 with a display. The interface is designed for voice-controlled navigation using the wake word "Lexicat" without keyboard/mouse input.
+
+#### Deployment Modes
+
+You can choose either:
+
+- **All-in-one Pi mode**: clone, build, and serve both backend and frontend directly on the Pi (steps below).
+- **Frontend‑only Pi mode**: run the backend (and optionally host static files) on another machine (e.g. your laptop), and point the Pi’s kiosk browser at that address (e.g. `http://192.168.1.10:3000`).
+
+Use whichever mode best fits your network and performance requirements.
 
 #### Hardware Requirements
 - Raspberry Pi 5
@@ -195,58 +225,15 @@ serve -s dist -l 3000
 
 #### Auto-start on Boot
 
-1. Create a startup script:
-```bash
-sudo nano /etc/systemd/system/home-hub.service
-```
 
-2. Add the following content:
-```ini
-[Unit]
-Description=Home Hub Calendar Display
-After=network.target
+1. Run the provided setup script to configure both the systemd service and Chromium autostart.
+   ```bash
+   cd ~/Home\ Hub
+   sudo bash setup-pi.sh
+   ```
 
-[Service]
-Type=simple
-User=pi
-WorkingDirectory=/home/pi/home-hub
-ExecStart=/usr/bin/node /usr/local/bin/serve -s dist -l 3000
-Restart=always
-RestartSec=10
 
-[Install]
-WantedBy=multi-user.target
-```
 
-3. Enable and start the service:
-```bash
-sudo systemctl enable home-hub.service
-sudo systemctl start home-hub.service
-```
-
-#### Display Configuration
-
-1. **Set display to auto-start**:
-```bash
-sudo nano ~/.config/lxsession/LXDE-pi/autostart
-```
-
-2. Add the following line:
-```
-@chromium-browser --kiosk --disable-web-security --user-data-dir=/tmp/chrome --no-first-run http://localhost:3000
-```
-
-3. **Disable screen saver**:
-```bash
-sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
-```
-
-4. Add:
-```
-@xset s off
-@xset -dpms
-@xset s noblank
-```
 
 ## End-to-End Whisper.cpp Setup
 
