@@ -158,7 +158,7 @@ This application is optimized for running on a Raspberry Pi 5 with a display. 
 You can choose either:
 
 - **All-in-one Pi mode**: clone, build, and serve both backend and frontend directly on the Pi (steps below).
-- **Frontend‑only Pi mode**: run the backend (and optionally host static files) on another machine (e.g. your laptop), and point the Pi’s kiosk browser at that address (e.g. `http://192.168.1.10:3000`).
+- **Frontend‑only Pi mode**: run the backend (and optionally host static files) on another machine (e.g. your laptop), and point the Pi’s kiosk browser at that address (e.g. `http://192.168.1.10:5173` for dev or `:3000` for the production build).
 
 Use whichever mode best fits your network and performance requirements.
 
@@ -226,14 +226,24 @@ serve -s dist -l 3000
 #### Auto-start on Boot
 
 
-1. Run the provided setup script to configure both the systemd service and Chromium autostart.
-   ```bash
-   cd ~/Home\ Hub
-   sudo bash setup-pi.sh
-   ```
+1. In your Home Hub folder, run the setup script. Choose one mode:
 
+- **Full Pi mode** (backend + dev frontend on Pi):
+  ```bash
+  cd ~/Home\ Hub
+  sudo bash setup-pi.sh
+  ```
+- **Kiosk‑only mode** (frontend only; remote backend):
+  ```bash
+  cd ~/Home\ Hub
+  sudo bash setup-pi.sh --kiosk-only http://<YOUR-LAPTOP-IP>:5173
+  ```
 
+2. Reboot the Pi to apply:
 
+```bash
+sudo reboot
+```
 
 ## End-to-End Whisper.cpp Setup
 
