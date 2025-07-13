@@ -6,6 +6,7 @@ import multer from 'multer'
 import { spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
+import fetch from 'node-fetch'
 
 // Load environment variables
 dotenv.config()
@@ -371,6 +372,55 @@ app.post('/api/whisper', upload.single('audio'), async (req, res) => {
     res.status(500).json({
       error: 'Transcription failed',
       message: error.message
+    })
+  }
+})
+
+// Generate image via OpenAI DALL·E
+app.post('/api/image', async (req, res) => {
+  const apiKey = process.env.VITE_OPENAI_API_KEY
+  const { prompt } = req.body
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'OpenAI API key not configured' })
+  }
+
+  if (!prompt || typeof prompt !== 'string') {
+    return res.status(400).json({ error: 'Prompt is required' })
+  }
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        prompt,
+        n: 1,
+        size: '512x512'
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('OpenAI image generation failed:', errorText)
+      return res.status(response.status).json({
+        error: 'OpenAI request failed',
+        message: errorText
+      })
+    }
+
+    const data = await response.json()
+    const imageUrl = data.data?.[0]?.url
+
+    res.json({ success: true, url: imageUrl })
+  } catch (error) {
+    console.error('OpenAI image endpoint error:', error)
+    res.status(500).json({
+      error: 'Failed to generate image',
+      message: error instanceof Error ? error.message : 'Unknown error'
     })
   }
 })

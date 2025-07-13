@@ -4,6 +4,7 @@ import HomeHub from './components/HomeHub'
 import SimpleTest from './components/SimpleTest'
 import DirectTest from './components/DirectTest'
 import AuthTest from './components/AuthTest'
+import VoiceImage from './components/VoiceImage'
 import { Toaster } from 'react-hot-toast'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/auth" element={<AuthTest />} />
         <Route path="/direct" element={<DirectTest />} />
         <Route path="/home" element={<HomeHub />} />
+        <Route path="/voice-image" element={<VoiceImage />} />
       </Routes>
       <Toaster 
         position="top-right"
