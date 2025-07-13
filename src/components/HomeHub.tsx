@@ -4,6 +4,7 @@ import { CalendarEvent } from '../types/calendar'
 import { useCalendar } from '../hooks/useCalendar'
 import { Clock, MapPin, Users, Mic, MicOff, Volume2, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import CalendarDisplay from './CalendarDisplay'
+import SetupGuide from './SetupGuide'
 import { backendUrl } from '../utils/backend'
 
 const HomeHub: React.FC = () => {
@@ -240,7 +241,13 @@ const HomeHub: React.FC = () => {
     }
   }
 
-  // Show error display if there's an error
+  // If calendar OAuth2 isn't configured or we need to authenticate, show the full setup guide
+  const needsAuthGuide = !isConfigured || (error && /authentication required/i.test(error))
+  if (needsAuthGuide) {
+    return <SetupGuide />
+  }
+
+  // For any other error, show an error panel
   if (error) {
     return (
       <div className="h-screen flex items-center justify-center bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
@@ -253,21 +260,6 @@ const HomeHub: React.FC = () => {
           >
             Retry
           </button>
-        </div>
-      </div>
-    )
-  }
-
-  // Show setup guide if Google Calendar is not configured
-  if (!isConfigured) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900">
-        <div className="text-center">
-          <div className="text-yellow-400 text-2xl mb-4">⚙️ Setup Required</div>
-          <div className="text-gray-400 mb-4">Google Calendar needs to be configured</div>
-          <div className="text-sm text-gray-500">
-            Please configure your Google Calendar integration
-          </div>
         </div>
       </div>
     )

@@ -80,16 +80,17 @@ fi
 # Check if required env vars are set
 source .env 2>/dev/null
 
-if [ -z "$GOOGLE_OAUTH2_CLIENT_ID" ] || [ "$GOOGLE_OAUTH2_CLIENT_ID" = "your_google_oauth2_client_id_here" ]; then
-    print_warning "GOOGLE_OAUTH2_CLIENT_ID not set or using placeholder"
+# Validate Google OAuth2 environment variables (VITE_* prefixes)
+if [ -z "$VITE_GOOGLE_CLIENT_ID" ] || [ "$VITE_GOOGLE_CLIENT_ID" = "your_google_oauth2_client_id_here" ]; then
+    print_warning "VITE_GOOGLE_CLIENT_ID not set or using placeholder"
 fi
 
-if [ -z "$GOOGLE_OAUTH2_CLIENT_SECRET" ] || [ "$GOOGLE_OAUTH2_CLIENT_SECRET" = "your_google_oauth2_client_secret_here" ]; then
-    print_warning "GOOGLE_OAUTH2_CLIENT_SECRET not set or using placeholder"
+if [ -z "$VITE_GOOGLE_CLIENT_SECRET" ] || [ "$VITE_GOOGLE_CLIENT_SECRET" = "your_google_oauth2_client_secret_here" ]; then
+    print_warning "VITE_GOOGLE_CLIENT_SECRET not set or using placeholder"
 fi
 
-if [ -z "$GOOGLE_CALENDAR_ID" ] || [ "$GOOGLE_CALENDAR_ID" = "your_calendar_id_here" ]; then
-    print_warning "GOOGLE_CALENDAR_ID not set or using placeholder"
+if [ -z "$VITE_GOOGLE_CALENDAR_ID" ] || [ "$VITE_GOOGLE_CALENDAR_ID" = "your_calendar_id_here" ]; then
+    print_warning "VITE_GOOGLE_CALENDAR_ID not set or using placeholder"
 fi
 
 # Step 4: Start backend server

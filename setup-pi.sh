@@ -28,23 +28,23 @@ fi
 
 # summary
 echo "🚀 Raspberry Pi auto-start setup ($MODE mode)"
-# Write systemd service file
+# Write systemd service file (serve built static dist/ on port 3000)
 cat > /etc/systemd/system/home-hub.service << 'EOF'
 [Unit]
-Description=Home Hub Calendar Display (dev mode)
+Description=Home Hub Static Kiosk Service
 After=network.target
 
 [Service]
 Type=simple
 User=pi
 WorkingDirectory=/home/pi/home-hub
-# Run the startup script which launches both backend and frontend (dev proxy on 5173)
-ExecStart=/bin/bash /home/pi/home-hub/start-home-hub.sh
+# Serve the built dist/ folder on port 3000
+ExecStart=/usr/bin/serve -s dist -l 3000
 Restart=always
 RestartSec=10
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user-target
 EOF
 
 echo "Reloading systemd and enabling service..."
