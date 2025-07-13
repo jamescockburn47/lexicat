@@ -10,6 +10,7 @@ A sophisticated home hub application with voice control using Whisper and Google
 - **Google Calendar Integration**: Real-time calendar data
 - **Modern UI**: Glass morphism design with smooth animations
 - **Real-time Updates**: Live calendar data synchronization
+- **Voice Image Generation**: Create images using spoken prompts via OpenAI
 
 ## Voice Commands
 
@@ -26,6 +27,7 @@ The app uses a wake word system optimized for Pi 5 display:
 - **Commands**: "Lexicat switch to weather" - Display weather view
 - **Commands**: "Lexicat switch to news" - Display news view
 - **Commands**: "Lexicat switch to tasks" - Display tasks view
+- **Page**: `/voice-image` - Generate images from spoken prompts
 
 ## Tech Stack
 
@@ -98,7 +100,8 @@ src/
 │   ├── HomeHub.tsx     # Main application component
 │   ├── CalendarDisplay.tsx  # Full-screen calendar
 │   ├── Sidebar.tsx     # Daily activities panel
-│   └── VoiceControl.tsx # Voice control interface
+│   ├── VoiceControl.tsx # Voice control interface
+│   └── VoiceImage.tsx  # Generate images from voice prompts
 ├── hooks/              # Custom React hooks
 │   └── useCalendar.ts  # Calendar data management
 ├── types/              # TypeScript type definitions
